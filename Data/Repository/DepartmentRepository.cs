@@ -19,9 +19,9 @@ namespace ContosoUniversity.Data.Repository
             _context = context;
         }
 
-        public Task AddAsync(Department department)
+        public async Task AddAsync(Department department)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(department);
         }
 
         public async void Delete(int departmentID)
@@ -35,24 +35,46 @@ namespace ContosoUniversity.Data.Repository
             return await _context.Departments.FindAsync(ID);
         }
 
-        public Task<IEnumerable<Department>> GetDepartmentsAsync()
+        public async Task<IEnumerable<Department>> GetDepartmentsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Departments.ToListAsync();
         }
 
-        public Task<(IEnumerable<Department>, int totalCount)> GetDepartmentsAsync(string name, string searchQuery, int pageNum, int pageSize)
+        public async Task<(IEnumerable<Department>, int totalCount)> GetDepartmentsAsync(string name, string searchQuery, int pageNum, int pageSize)
         {
-            throw new NotImplementedException();
+            IQueryable<Department> collection = _context.Departments as IQueryable<Department>;            
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = name.Trim();
+                collection = collection.Where(c => c.Name == name);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(c => c.Name.Contains(searchQuery)
+                                            || c.Name.Contains(searchQuery));
+            }
+
+            var result = await collection.OrderBy(c => c.Name)
+                                    .Skip(pageSize * (pageNum - 1))
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
+            int totalCount = await collection.CountAsync();
+
+            return (result, totalCount);
         }
 
-        public Task SaveAsync()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
 
         public void Update(Department department)
         {
-            throw new NotImplementedException();
+            _context.Departments.Update(department);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -65,7 +87,7 @@ namespace ContosoUniversity.Data.Repository
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
+                _context.Dispose();
                 disposedValue = true;
             }
         }
