@@ -49,7 +49,11 @@ namespace Data.Repository
         }
         public async Task<Student> GetStudentAsync(int ID)
          {
-            return await _context.Students.FindAsync(ID);
+            return await    _context.Students
+                                        .Include(s => s.Enrollments)
+                                        .ThenInclude(e => e.Course)
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync(m => m.ID == ID);
          }
         public async Task AddAsync(Student student)
         {
@@ -85,6 +89,16 @@ namespace Data.Repository
         {  
             Dispose(true);  
             GC.SuppressFinalize(this);  
-        }  
+        }
+
+        public async Task<bool> StudentExistsAsync(int ID)
+        {
+            Student student = await _context.Students.FindAsync(ID);
+
+            if (student != null)
+                return true;
+            else
+                return false;
+        }
     }
 }

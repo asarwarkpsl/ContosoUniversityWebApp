@@ -8,6 +8,7 @@ namespace Data.Repository
         //public Task<(IEnumerable<Student>,int totalCount)> GetStudentsAsync(string? title,string? searchQuery,int pageNum,int pageSize);
         public Task<IEnumerable<Student>> GetStudentsAsync(string? title,string? searchQuery,int pageNum,int pageSize);
 
+        public Task<bool> StudentExistsAsync(int ID);
         public Task<Student> GetStudentAsync(int ID);
         public Task AddAsync(Student student);
         public void Update(Student student);
