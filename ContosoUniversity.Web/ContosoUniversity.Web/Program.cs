@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<SchoolContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext")));
-builder.Services.AddSingleton<IStudentRepository,StudentRepository>();
+builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -33,6 +33,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<SchoolContext>();
+    
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
     DbInitializer.Initialize(context);

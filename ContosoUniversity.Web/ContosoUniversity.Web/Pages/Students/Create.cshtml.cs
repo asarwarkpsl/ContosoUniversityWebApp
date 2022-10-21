@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Data.Context;
 using Data.Models;
+using Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
     public class CreateModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IStudentRepository _studentRepo;
 
-        public CreateModel(SchoolContext context)
+        public CreateModel(IStudentRepository studentRepo)
         {
-            _context = context;
+            _studentRepo = studentRepo;
         }
 
         public IActionResult OnGet()
@@ -36,8 +37,11 @@ namespace ContosoUniversity.Web.Pages.Students
                 return Page();
             }
 
-            _context.Students.Add(Student);
-            await _context.SaveChangesAsync();
+            //_context.Students.Add(Student);
+            //await _context.SaveChangesAsync();
+
+            await _studentRepo.AddAsync(Student);
+            await _studentRepo.SaveAsync();
 
             return RedirectToPage("./Index");
         }

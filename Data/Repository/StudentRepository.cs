@@ -14,21 +14,20 @@ namespace Data.Repository
             _context = context;
         }        
 
-        public async Task<IEnumerable<Student>> GetStudentsAsync()
+        public async Task<IList<Student>> GetStudentsAsync()
         {
             return await _context.Students.ToListAsync();
         }
 
-        //public async Task<(IEnumerable<Student>,int totalCount)> GetStudentsAsync(string? lastName,string? searchQuery,int pageNum,int pageSize)
-        public async Task<IEnumerable<Student>> GetStudentsAsync(string? lastName,string? searchQuery,int pageNum,int pageSize)
+        public async Task<(IList<Student>,int totalCount)> GetStudentsAsync(string? searchQuery,int pageNum,int pageSize)
         {
             IQueryable<Student> collection = _context.Students as IQueryable<Student>;
 
-            if(!string.IsNullOrWhiteSpace(lastName))
-            {
-                lastName = lastName.Trim();
-                collection = collection.Where(c => c.LastName == lastName);
-            }
+            //if(!string.IsNullOrWhiteSpace(lastName))
+            //{
+            //    lastName = lastName.Trim();
+            //    collection = collection.Where(c => c.LastName == lastName);
+            //}
 
             if(!string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -44,10 +43,10 @@ namespace Data.Repository
 
             int totalCount = await collection.CountAsync();
             
-            //////////return (result,totalCount);
-            return result;
+            return (result,totalCount);
+            //return result;
         }
-        public async Task<Student> GetStudentAsync(int ID)
+        public async Task<Student> GetStudentAsync(int? ID)
          {
             return await    _context.Students
                                         .Include(s => s.Enrollments)
@@ -67,6 +66,10 @@ namespace Data.Repository
         {
             Task<Student> student = GetStudentAsync(studentID);
             _context.Students.Remove(student.Result);
+        }
+        public void Delete(Student student)
+        {
+            _context.Students.Remove(student);
         }
         public async Task SaveAsync()
         {

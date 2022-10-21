@@ -8,16 +8,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
     public class EditModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IStudentRepository _studentRepo;
 
-        public EditModel(SchoolContext context)
+        public EditModel(IStudentRepository studentRepo)
         {
-            _context = context;
+            _studentRepo = studentRepo;
         }
 
         [BindProperty]
@@ -25,12 +26,13 @@ namespace ContosoUniversity.Web.Pages.Students
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var student =  await _context.Students.FirstOrDefaultAsync(m => m.ID == id);
+            var student = await _studentRepo.GetStudentAsync(id);
+
             if (student == null)
             {
                 return NotFound();
@@ -48,15 +50,16 @@ namespace ContosoUniversity.Web.Pages.Students
                 return Page();
             }
 
-            _context.Attach(Student).State = EntityState.Modified;
+            //_context.Attach(Student).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _studentRepo.Update(Student);
+                await _studentRepo.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(Student.ID))
+               if(!await _studentRepo.StudentExistsAsync(Student.ID))
                 {
                     return NotFound();
                 }
@@ -67,11 +70,6 @@ namespace ContosoUniversity.Web.Pages.Students
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool StudentExists(int id)
-        {
-          return _context.Students.Any(e => e.ID == id);
         }
     }
 }

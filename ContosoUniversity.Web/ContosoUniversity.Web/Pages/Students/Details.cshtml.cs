@@ -13,6 +13,8 @@ namespace ContosoUniversity.Web.Pages.Students
 {
     public class DetailsModel : PageModel
     {
+        public Student Student { get; set; }
+
         private readonly IStudentRepository _studentRepo;
 
         public DetailsModel(IStudentRepository studentRepo)
@@ -20,7 +22,6 @@ namespace ContosoUniversity.Web.Pages.Students
             _studentRepo = studentRepo;
         }
 
-      public Student Student { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,11 +34,9 @@ namespace ContosoUniversity.Web.Pages.Students
                 if(_studentRepo.StudentExistsAsync((int)id).Result == false)
                     return NotFound();  
             }
-            var student = await _context.Students
-                                        .Include(s => s.Enrollments)
-                                        .ThenInclude(e => e.Course)
-                                        .AsNoTracking()
-                                        .FirstOrDefaultAsync(m => m.ID == id);
+
+            Student student = await _studentRepo.GetStudentAsync(id);
+
 
             if (student == null)
             {

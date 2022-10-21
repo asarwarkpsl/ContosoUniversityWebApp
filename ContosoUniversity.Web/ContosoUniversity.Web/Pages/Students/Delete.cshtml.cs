@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
     public class DeleteModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IStudentRepository _studentRepo;
 
-        public DeleteModel(SchoolContext context)
+        public DeleteModel(IStudentRepository studentRepo)
         {
-            _context = context;
+            _studentRepo = studentRepo;
         }
 
         [BindProperty]
@@ -24,12 +25,14 @@ namespace ContosoUniversity.Web.Pages.Students
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students.FirstOrDefaultAsync(m => m.ID == id);
+           // var student = await _context.Students.FirstOrDefaultAsync(m => m.ID == id);
+
+            var student = await _studentRepo.GetStudentAsync(id);   
 
             if (student == null)
             {
@@ -44,17 +47,20 @@ namespace ContosoUniversity.Web.Pages.Students
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Students == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var student = await _context.Students.FindAsync(id);
+            var student = await _studentRepo.GetStudentAsync(id);
 
             if (student != null)
             {
                 Student = student;
-                _context.Students.Remove(Student);
-                await _context.SaveChangesAsync();
+                //_context.Students.Remove(Student);
+                //await _context.SaveChangesAsync();
+
+                _studentRepo.Delete(student);
+                await _studentRepo.SaveAsync();
             }
 
             return RedirectToPage("./Index");
