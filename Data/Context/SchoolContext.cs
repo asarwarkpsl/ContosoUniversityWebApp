@@ -1,12 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Data.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Data.Context
 {
     public class SchoolContext: DbContext
     {
         public SchoolContext(DbContextOptions<SchoolContext> options)
-                : base(options){}
+                : base(options)
+        {
+        }
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -25,5 +29,15 @@ namespace Data.Context
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
         }
 
+        public class SchoolContextFactory : IDesignTimeDbContextFactory<SchoolContext>
+        {
+            public SchoolContext CreateDbContext(string[] args)
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
+                optionsBuilder.UseSqlServer();
+
+                return new SchoolContext(optionsBuilder.Options);
+            }
+        }
     }
 }

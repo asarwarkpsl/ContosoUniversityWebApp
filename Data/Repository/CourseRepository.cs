@@ -36,16 +36,17 @@ namespace Data.Repository
             }
 
             var result = await collection.OrderBy(c => c.Title)
+                                    .Include(c => c.Department)
                                     .Skip(pageSize * (pageNum-1))
                                     .Take(pageSize)
                                     .ToListAsync();
 
             int totalCount = await collection.CountAsync();
-            
+
             return (result,totalCount);
         }
 
-        public async Task<Course> GetCourseAsync(int ID)
+        public async Task<Course> GetCourseAsync(int? ID)
          {
             return await _context.Courses.FindAsync(ID);
          }
@@ -57,10 +58,14 @@ namespace Data.Repository
         {
             _context.Courses.Update(course);
         }
-        public void Delete(int courseID)
+        public void Delete(int? courseID)
         {
             Task<Course> course = GetCourseAsync(courseID);
             _context.Courses.Remove(course.Result);
+        }
+        public bool CourseExists(int courseID)
+        {
+            return _context.Courses.Any(e => e.ID == courseID);
         }
         public async Task SaveAsync()
         {
