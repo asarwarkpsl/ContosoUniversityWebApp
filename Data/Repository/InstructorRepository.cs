@@ -57,7 +57,13 @@ namespace ContosoUniversity.Data.Repository
 
             return (result, totalCount);
         }
-
+        public async Task<IEnumerable<Enrollment>> GetEnrollmentsAsync(int CourseID)
+        {
+            return await _context.Enrollments
+                    .Where(x => x.CourseID == CourseID)
+                    .Include(i => i.Student)
+                    .ToListAsync();
+        }
         public async Task<Instructor> GetInstructorAsync(int? ID)
         {
            return await _context.Instructors.FindAsync(ID);
@@ -65,7 +71,11 @@ namespace ContosoUniversity.Data.Repository
 
         public async Task<IEnumerable<Instructor>> GetInstructorsAsync()
         {
-            return await _context.Instructors.ToListAsync();
+            return await _context.Instructors
+                                .Include(i => i.OfficeAssignment)
+                                .Include(i => i.Courses)
+                                    .ThenInclude(c => c.Department)
+                                .ToListAsync();
         }
 
         public async Task SaveAsync()

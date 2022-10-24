@@ -16,6 +16,7 @@ namespace ContosoUniversity.Data.Repository
         public void Update(Instructor instructor);
         public void Delete(int? instructorID);
         public Task<bool> isInstructorExists(int ID);
+        public Task<IEnumerable<Enrollment>> GetEnrollmentsAsync(int CourseID);
         public Task SaveAsync();
     }
 }
