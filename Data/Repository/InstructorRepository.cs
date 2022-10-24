@@ -3,13 +3,14 @@ using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ContosoUniversity.Data.Repository
 {
-    internal class InstructorRepository : IInstructorRepository
+    public class InstructorRepository : IInstructorRepository
     {
         private bool disposedValue;
         private readonly SchoolContext _context;
@@ -24,7 +25,7 @@ namespace ContosoUniversity.Data.Repository
             await _context.Instructors.AddAsync(instructor);
         }
 
-        public async void Delete(int instructorID)
+        public async void Delete(int? instructorID)
         {
             Instructor instructor = await GetInstructorAsync(instructorID);
             _context.Instructors.Remove(instructor);
@@ -57,7 +58,7 @@ namespace ContosoUniversity.Data.Repository
             return (result, totalCount);
         }
 
-        public async Task<Instructor> GetInstructorAsync(int ID)
+        public async Task<Instructor> GetInstructorAsync(int? ID)
         {
            return await _context.Instructors.FindAsync(ID);
         }
@@ -75,6 +76,16 @@ namespace ContosoUniversity.Data.Repository
         public void Update(Instructor instructor)
         {
             _context.Instructors.Update(instructor);
+        }
+
+        public async Task<bool> isInstructorExists(int ID)
+        {
+            var data = await _context.Instructors.FindAsync(ID);
+
+            if (data != null)
+                return true;
+            else
+                return false;
         }
 
         protected virtual void Dispose(bool disposing)

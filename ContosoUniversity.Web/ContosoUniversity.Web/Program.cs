@@ -1,3 +1,4 @@
+using ContosoUniversity.Data.Repository;
 using Data.Context;
 using Data.Models;
 using Data.Repository;
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<SchoolContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext")));
 builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

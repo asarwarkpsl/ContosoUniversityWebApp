@@ -15,7 +15,10 @@ namespace Data.Repository
 
         public async Task<IEnumerable<Course>> GetCoursesAsync()
         {
-            return await _context.Courses.ToListAsync();
+            return await _context.Courses
+                                .Include(c => c.Department)
+                                .AsNoTracking()
+                                .ToListAsync();
         }
 
         public async Task<(IEnumerable<Course>,int totalCount)> GetCoursesAsync(string? title,string? searchQuery,int pageNum,int pageSize)

@@ -8,22 +8,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
-using Data.Repository;
+using ContosoUniversity.Data.Repository;
 using NuGet.Protocol.Core.Types;
 
-namespace ContosoUniversity.Web.Pages.Courses
+namespace ContosoUniversity.Web.Pages.Instructors
 {
     public class EditModel : PageModel
     {
-        private readonly ICourseRepository _repository;
+        private readonly IInstructorRepository _repository;
 
-        public EditModel(ICourseRepository repository)
+        public EditModel(IInstructorRepository repository)
         {
             _repository = repository;
         }
 
         [BindProperty]
-        public Course Course { get; set; } = default!;
+        public Instructor Instructor { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -32,14 +32,12 @@ namespace ContosoUniversity.Web.Pages.Courses
                 return NotFound();
             }
 
-            var course = await _repository.GetCourseAsync(id);
-
-            if (course == null)
+            var instructor = await _repository.GetInstructorAsync(id);
+            if (instructor == null)
             {
                 return NotFound();
             }
-            Course = course;
-            ViewData["DepartmentID"] = ""; // new SelectList(_context.Departments, "ID", "ID");
+            Instructor = instructor;
             return Page();
         }
 
@@ -52,7 +50,7 @@ namespace ContosoUniversity.Web.Pages.Courses
                 return Page();
             }
 
-            _repository.Update(Course);
+            _repository.Update(Instructor);
 
             try
             {
@@ -60,7 +58,7 @@ namespace ContosoUniversity.Web.Pages.Courses
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CourseExists(Course.ID))
+                if (!await InstructorExists(Instructor.ID))
                 {
                     return NotFound();
                 }
@@ -73,9 +71,9 @@ namespace ContosoUniversity.Web.Pages.Courses
             return RedirectToPage("./Index");
         }
 
-        private bool CourseExists(int id)
+        private async Task<bool> InstructorExists(int id)
         {
-            return _repository.CourseExists(id);
+            return await _repository.isInstructorExists(id);
         }
     }
 }
