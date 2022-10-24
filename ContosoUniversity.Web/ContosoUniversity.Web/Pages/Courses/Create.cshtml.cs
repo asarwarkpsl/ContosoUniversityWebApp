@@ -9,10 +9,11 @@ using Data.Context;
 using Data.Models;
 using Data.Repository;
 using NuGet.Protocol.Core.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Web.Pages.Courses
 {
-    public class CreateModel : PageModel
+    public class CreateModel : DepartmentNamePageModel
     {
         private ICourseRepository _repository;
 
@@ -23,7 +24,7 @@ namespace ContosoUniversity.Web.Pages.Courses
 
         public IActionResult OnGet()
         {
-            ViewData["DepartmentID"] = new SelectList(_repository.GetCoursesAsync().Result, "ID", "ID");
+            PopulateDepartmentsDropDownList(_repository);
             return Page();
         }
 

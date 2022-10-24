@@ -50,9 +50,18 @@ namespace Data.Repository
         }
 
         public async Task<Course> GetCourseAsync(int? ID)
-         {
-            return await _context.Courses.FindAsync(ID);
-         }
+        {
+            //  return await _context.Courses.FindAsync(ID);
+
+            return await _context.Courses
+                            .Include(c => c.Department).FirstOrDefaultAsync(m => m.ID == ID);
+        }
+
+        public async Task<List<Department>> GetDepartmentsAsync()
+        {
+            return await _context.Departments
+                                .OrderBy(d => d.Name).ToListAsync();
+        }
         public async Task AddAsync(Course course)
         {
             await _context.Courses.AddAsync(course);

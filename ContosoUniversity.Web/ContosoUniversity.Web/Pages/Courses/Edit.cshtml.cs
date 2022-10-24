@@ -13,7 +13,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace ContosoUniversity.Web.Pages.Courses
 {
-    public class EditModel : PageModel
+    public class EditModel : DepartmentNamePageModel
     {
         private readonly ICourseRepository _repository;
 
@@ -39,7 +39,8 @@ namespace ContosoUniversity.Web.Pages.Courses
                 return NotFound();
             }
             Course = course;
-            ViewData["DepartmentID"] = ""; // new SelectList(_context.Departments, "ID", "ID");
+
+            PopulateDepartmentsDropDownList(_repository, Course.DepartmentID);
             return Page();
         }
 
