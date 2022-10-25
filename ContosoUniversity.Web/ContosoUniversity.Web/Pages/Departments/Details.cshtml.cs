@@ -7,28 +7,30 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using ContosoUniversity.Data.Repository;
+using NuGet.Protocol.Core.Types;
 
 namespace ContosoUniversity.Web.Pages.Departments
 {
     public class DetailsModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IDepartmentRepository _repository;
 
-        public DetailsModel(SchoolContext context)
+        public DetailsModel(IDepartmentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-      public Department Department { get; set; }
+        public Department Department { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments.FirstOrDefaultAsync(m => m.ID == id);
+            var department = await _repository.GetDepartmentAsync(id);
             if (department == null)
             {
                 return NotFound();

@@ -8,16 +8,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using ContosoUniversity.Data.Repository;
+using NuGet.Protocol.Core.Types;
 
 namespace ContosoUniversity.Web.Pages.Departments
 {
     public class EditModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IDepartmentRepository _repository;
 
-        public EditModel(SchoolContext context)
+        public EditModel(IDepartmentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [BindProperty]
@@ -25,18 +27,18 @@ namespace ContosoUniversity.Web.Pages.Departments
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department =  await _context.Departments.FirstOrDefaultAsync(m => m.ID == id);
+            var department =  await _repository.GetDepartmentAsync(id);
             if (department == null)
             {
                 return NotFound();
             }
             Department = department;
-           ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FirstMidName");
+           ViewData["InstructorID"] = new SelectList(await _repository.GetInstructorsAsync(), "ID", "FirstMidName");
             return Page();
         }
 
@@ -49,15 +51,16 @@ namespace ContosoUniversity.Web.Pages.Departments
                 return Page();
             }
 
-            _context.Attach(Department).State = EntityState.Modified;
+            //_context.Attach(Department).State = EntityState.Modified;
+            _repository.Update(Department);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DepartmentExists(Department.ID))
+                if (!_repository.DepartmentExists(Department.ID))
                 {
                     return NotFound();
                 }
@@ -68,11 +71,6 @@ namespace ContosoUniversity.Web.Pages.Departments
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool DepartmentExists(int id)
-        {
-          return _context.Departments.Any(e => e.ID == id);
-        }
+        }        
     }
 }

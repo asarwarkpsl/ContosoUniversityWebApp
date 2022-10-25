@@ -11,10 +11,12 @@ namespace ContosoUniversity.Data.Repository
     {
         public Task<IEnumerable<Department>> GetDepartmentsAsync();
         public Task<(IEnumerable<Department>, int totalCount)> GetDepartmentsAsync(string? name, string? searchQuery, int pageNum, int pageSize);
-        public Task<Department> GetDepartmentAsync(int ID);
+        public Task<Department> GetDepartmentAsync(int? ID);
         public Task AddAsync(Department department);
         public void Update(Department department);
         public void Delete(int departmentID);
+        public bool DepartmentExists(int departmentID);
+        public Task<List<Instructor>> GetInstructorsAsync();
         public Task SaveAsync();
     }
 }

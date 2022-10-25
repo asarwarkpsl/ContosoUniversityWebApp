@@ -7,26 +7,27 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using ContosoUniversity.Data.Repository;
+using NuGet.Protocol.Core.Types;
 
 namespace ContosoUniversity.Web.Pages.Departments
 {
     public class IndexModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IDepartmentRepository _repository;
 
-        public IndexModel(SchoolContext context)
+        public IndexModel(IDepartmentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public IList<Department> Department { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Departments != null)
+            //if (_context.Departments != null)
             {
-                Department = await _context.Departments
-                .Include(d => d.Administrator).ToListAsync();
+                Department = (IList<Department>)await _repository.GetDepartmentsAsync();
             }
         }
     }

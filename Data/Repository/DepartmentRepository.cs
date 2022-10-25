@@ -9,7 +9,7 @@ using Data.Models;
 
 namespace ContosoUniversity.Data.Repository
 {
-    internal class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : IDepartmentRepository
     {
         private bool disposedValue;
         private readonly SchoolContext _context;
@@ -30,14 +30,15 @@ namespace ContosoUniversity.Data.Repository
             _context.Departments.Remove(dept);
         }
 
-        public async Task<Department> GetDepartmentAsync(int ID)
+        public async Task<Department> GetDepartmentAsync(int? ID)
         {
             return await _context.Departments.FindAsync(ID);
         }
 
         public async Task<IEnumerable<Department>> GetDepartmentsAsync()
         {
-            return await _context.Departments.ToListAsync();
+            return await _context.Departments
+                                .Include(d => d.Administrator).ToListAsync();
         }
 
         public async Task<(IEnumerable<Department>, int totalCount)> GetDepartmentsAsync(string name, string searchQuery, int pageNum, int pageSize)
@@ -104,6 +105,16 @@ namespace ContosoUniversity.Data.Repository
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public bool DepartmentExists(int departmentID)
+        {
+            return _context.Departments.Any(e => e.ID == departmentID);
+        }
+
+        public async Task<List<Instructor>> GetInstructorsAsync()
+        {
+            return await _context.Instructors.ToListAsync();
         }
     }
 }

@@ -7,21 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Data.Context;
 using Data.Models;
+using ContosoUniversity.Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Departments
 {
     public class CreateModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IDepartmentRepository _repository;
 
-        public CreateModel(SchoolContext context)
+        public CreateModel(IDepartmentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-        ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FirstMidName");
+        ViewData["InstructorID"] = new SelectList(await _repository.GetInstructorsAsync(), "ID", "FirstMidName");
             return Page();
         }
 
@@ -37,8 +38,8 @@ namespace ContosoUniversity.Web.Pages.Departments
                 return Page();
             }
 
-            _context.Departments.Add(Department);
-            await _context.SaveChangesAsync();
+            await _repository.AddAsync(Department);
+            await _repository.SaveAsync();
 
             return RedirectToPage("./Index");
         }

@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
+using ContosoUniversity.Data.Repository;
+using NuGet.Protocol.Core.Types;
 
 namespace ContosoUniversity.Web.Pages.Departments
 {
     public class DeleteModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IDepartmentRepository _repository;
 
-        public DeleteModel(SchoolContext context)
+        public DeleteModel(IDepartmentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [BindProperty]
@@ -24,12 +26,12 @@ namespace ContosoUniversity.Web.Pages.Departments
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments.FirstOrDefaultAsync(m => m.ID == id);
+            var department = await _repository.GetDepartmentAsync(id);
 
             if (department == null)
             {
@@ -44,17 +46,18 @@ namespace ContosoUniversity.Web.Pages.Departments
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Departments == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var department = await _context.Departments.FindAsync(id);
+            var department =  await _repository.GetDepartmentAsync(id);
 
             if (department != null)
             {
                 Department = department;
-                _context.Departments.Remove(Department);
-                await _context.SaveChangesAsync();
+                
+                _repository.Delete(Department.ID);
+                await _repository.SaveAsync();
             }
 
             return RedirectToPage("./Index");
