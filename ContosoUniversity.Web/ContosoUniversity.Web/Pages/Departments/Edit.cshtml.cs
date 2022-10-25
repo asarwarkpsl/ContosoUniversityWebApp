@@ -8,39 +8,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
-using Data.Repository;
-using NuGet.Protocol.Core.Types;
 
-namespace ContosoUniversity.Web.Pages.Courses
+namespace ContosoUniversity.Web.Pages.Departments
 {
-    public class EditModel : DepartmentNamePageModel
+    public class EditModel : PageModel
     {
-        private readonly ICourseRepository _repository;
+        private readonly SchoolContext _context;
 
-        public EditModel(ICourseRepository repository)
+        public EditModel(SchoolContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
         [BindProperty]
-        public Course Course { get; set; } = default!;
+        public Department Department { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Departments == null)
             {
                 return NotFound();
             }
 
-            var course = await _repository.GetCourseAsync(id);
-
-            if (course == null)
+            var department =  await _context.Departments.FirstOrDefaultAsync(m => m.ID == id);
+            if (department == null)
             {
                 return NotFound();
             }
-            Course = course;
-
-            PopulateDepartmentsDropDownList(_repository, Course.DepartmentID);
+            Department = department;
+           ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FirstMidName");
             return Page();
         }
 
@@ -53,15 +49,15 @@ namespace ContosoUniversity.Web.Pages.Courses
                 return Page();
             }
 
-            _repository.Update(Course);
+            _context.Attach(Department).State = EntityState.Modified;
 
             try
             {
-                await _repository.SaveAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CourseExists(Course.CourseID))
+                if (!DepartmentExists(Department.ID))
                 {
                     return NotFound();
                 }
@@ -74,9 +70,9 @@ namespace ContosoUniversity.Web.Pages.Courses
             return RedirectToPage("./Index");
         }
 
-        private bool CourseExists(int id)
+        private bool DepartmentExists(int id)
         {
-            return _repository.CourseExists(id);
+          return _context.Departments.Any(e => e.ID == id);
         }
     }
 }

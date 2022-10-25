@@ -54,7 +54,7 @@ namespace Data.Repository
             //  return await _context.Courses.FindAsync(ID);
 
             return await _context.Courses
-                            .Include(c => c.Department).FirstOrDefaultAsync(m => m.ID == ID);
+                            .Include(c => c.Department).FirstOrDefaultAsync(m => m.CourseID == ID);
         }
 
         public async Task<List<Department>> GetDepartmentsAsync()
@@ -77,7 +77,7 @@ namespace Data.Repository
         }
         public bool CourseExists(int courseID)
         {
-            return _context.Courses.Any(e => e.ID == courseID);
+            return _context.Courses.Any(e => e.CourseID == courseID);
         }
         public async Task SaveAsync()
         {

@@ -146,7 +146,7 @@ namespace Data.Models
 
             var chemistry = new Course
             {
-                ID = 1050,
+                CourseID = 1050,
                 Title = "Chemistry",
                 Credits = 3,
                 Department = engineering,
@@ -155,7 +155,7 @@ namespace Data.Models
      
             var microeconomics = new Course
             {
-                ID = 4022,
+                CourseID = 4022,
                 Title = "Microeconomics",
                 Credits = 3,
                 Department = economics,
@@ -164,7 +164,7 @@ namespace Data.Models
      
             var macroeconmics = new Course
             {
-                ID = 4041,
+                CourseID = 4041,
                 Title = "Macroeconomics",
                 Credits = 3,
                 Department = economics,
@@ -173,7 +173,7 @@ namespace Data.Models
      
             var calculus = new Course
             {
-                ID = 1045,
+                CourseID = 1045,
                 Title = "Calculus",
                 Credits = 4,
                 Department = mathematics,
@@ -182,7 +182,7 @@ namespace Data.Models
      
             var trigonometry = new Course
             {
-                ID = 3141,
+                CourseID = 3141,
                 Title = "Trigonometry",
                 Credits = 4,
                 Department = mathematics,
@@ -191,7 +191,7 @@ namespace Data.Models
      
             var composition = new Course
             {
-                ID = 2021,
+                CourseID = 2021,
                 Title = "Composition",
                 Credits = 3,
                 Department = english,
@@ -200,7 +200,7 @@ namespace Data.Models
      
             var literature = new Course
             {
-                ID = 2042,
+                CourseID = 2042,
                 Title = "Literature",
                 Credits = 4,
                 Department = english,

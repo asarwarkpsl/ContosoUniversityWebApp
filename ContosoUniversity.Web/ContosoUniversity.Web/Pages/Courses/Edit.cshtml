@@ -14,10 +14,10 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Course.ID" />
+            <input type="hidden" asp-for="Course.CourseID" />
              <div class="form-group">
-                <label asp-for="Course.ID" class="control-label"></label>
-                <div>@Html.DisplayFor(model => model.Course.ID)</div>
+                <label asp-for="Course.CourseID" class="control-label"></label>
+                <div>@Html.DisplayFor(model => model.Course.CourseID)</div>
             </div>
             <div class="form-group">
                 <label asp-for="Course.Title" class="control-label"></label>

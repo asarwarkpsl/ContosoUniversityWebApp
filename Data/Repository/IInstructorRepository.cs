@@ -18,5 +18,6 @@ namespace ContosoUniversity.Data.Repository
         public Task<bool> isInstructorExists(int ID);
         public Task<IEnumerable<Enrollment>> GetEnrollmentsAsync(int CourseID);
         public Task SaveAsync();
+        public List<Course> GetCourses();
     }
 }

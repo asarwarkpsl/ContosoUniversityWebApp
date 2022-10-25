@@ -66,7 +66,11 @@ namespace ContosoUniversity.Data.Repository
         }
         public async Task<Instructor> GetInstructorAsync(int? ID)
         {
-           return await _context.Instructors.FindAsync(ID);
+           return await _context.Instructors
+                                .Include(i => i.OfficeAssignment)
+                                .Include(i => i.Courses)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(m => m.ID == ID);
         }
 
         public async Task<IEnumerable<Instructor>> GetInstructorsAsync()
@@ -78,6 +82,10 @@ namespace ContosoUniversity.Data.Repository
                                 .ToListAsync();
         }
 
+        public List<Course> GetCourses()
+        {
+            return _context.Courses.ToList();
+        }
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
