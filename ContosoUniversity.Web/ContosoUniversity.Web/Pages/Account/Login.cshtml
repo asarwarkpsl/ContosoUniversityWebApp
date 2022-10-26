@@ -1,0 +1,38 @@
+﻿@page
+@model ContosoUniversity.Web.Pages.Account.LoginModel
+@{
+}
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <div class="col-10">
+            <div class="form-group row" >
+                <div class="col-2">
+                    <label asp-for="Credentials.UserName"></label>
+                </div>
+                <div class="col-5" style="padding-bottom:5px">
+                    <input asp-for="Credentials.UserName" type="text" class="form-control" />
+                </div>
+                <div class="col-3" style="padding-bottom:5px">
+                    <span class="text-danger" asp-validation-for="Credentials.UserName"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Credentials.Password"></label>
+                </div>
+                <div class="col-5" style="padding-bottom:5px">
+                    <input type="password" asp-for="Credentials.Password" class="form-control" />
+                </div>
+                <div class="col-3" style="padding-bottom:5px">
+                    <span class="text-danger" asp-validation-for="Credentials.Password"></span>
+                </div>
+            </div>
+            <div class="form-group row" style="padding-bottom:5px">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
