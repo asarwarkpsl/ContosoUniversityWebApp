@@ -1,3 +1,4 @@
+using ContosoUniversity.Data.Models.Account;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,7 @@ namespace Data.Models
     public class Student
     {
         public int ID {get;set;}
+
         [Required]
         [StringLength(50,ErrorMessage = "Last name cannot longer than 50 characters")]
         [Display(Name ="Last Name")]
@@ -30,7 +32,7 @@ namespace Data.Models
                 return LastName + "," + FirstMidName;
             }
         }
-
+        public User User { get; set; }
         public ICollection<Enrollment> Enrollments { get; set; }
     }
 }

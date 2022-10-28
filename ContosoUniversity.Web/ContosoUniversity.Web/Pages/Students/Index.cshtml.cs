@@ -9,6 +9,7 @@ using Data.Context;
 using Data.Models;
 using Data.Repository;
 using Microsoft.Data.SqlClient;
+using System.Security.Claims;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
@@ -23,16 +24,16 @@ namespace ContosoUniversity.Web.Pages.Students
         public string? CurrentFilter { get; set; }
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; } = 1;
-        public IndexModel(IStudentRepository studentRepo,IConfiguration config)
+        public IndexModel(IStudentRepository studentRepo, IConfiguration config)
         {
             _studentRepo = studentRepo;
             _config = config;
         }
 
-        public IList<Student> Student { get;set; } = default!;
+        public IList<Student> Student { get; set; } = default!;
         public IConfiguration _config { get; }
 
-        public async Task OnGetAsync(string? sortOrder, string? searchString,int? pageIndex)
+        public async Task OnGetAsync(string? sortOrder, string? searchString, int? pageIndex)
         {
             NameSort = string.IsNullOrEmpty(sortOrder) ? "asc" : "desc";
             CurrentFilter = string.IsNullOrEmpty(searchString) ? string.Empty : searchString;
@@ -41,29 +42,49 @@ namespace ContosoUniversity.Web.Pages.Students
             var pageSize = _config.GetValue("PageSize", 5);
 
 
-            (Student, int totalCount) = await _studentRepo.GetStudentsAsync(CurrentFilter, CurrentPage, pageSize);
-
-            if(Student == null)
-                return;
-
-            TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-
-            IQueryable<Student>? collection = Student.AsQueryable<Student>();
-
-            if (collection == null)
-                return;
-
-            switch (NameSort)
+            if (User.IsInRole("Admin"))
             {
-                case "desc":
-                    collection = collection.OrderByDescending(s => s.LastName);
-                    break;
-                default:
-                    collection = collection.OrderBy(s => s.LastName); break;
+                (Student, int totalCount) = await _studentRepo.GetStudentsAsync(CurrentFilter, CurrentPage, pageSize);
+
+                if (Student == null)
+                    return;
+
+
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+
+                IQueryable<Student>? collection = Student.AsQueryable<Student>();
+
+                if (collection == null)
+                    return;
+
+                switch (NameSort)
+                {
+                    case "desc":
+                        collection = collection.OrderByDescending(s => s.LastName);
+                        break;
+                    default:
+                        collection = collection.OrderBy(s => s.LastName); break;
+                }
+
+                Student = collection.AsNoTracking().ToList();
+            }
+            else
+            {
+                string? claimUID = null;
+                Claim? clm = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+                if (clm != null)
+                {
+                    claimUID = clm.Value;
+                    var student = await _studentRepo.GetStudentAsync(int.Parse(claimUID));
+
+                    Student = new List<Student>(1);
+                    Student.Add(student);
+                    TotalPages = 1;
+                }
             }
 
-            Student = collection.AsNoTracking().ToList();
         }
         public bool HasPreviousPage => CurrentPage > 1;
 

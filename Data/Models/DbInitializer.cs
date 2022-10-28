@@ -1,3 +1,5 @@
+using ContosoUniversity.Data.Models;
+using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 
 namespace Data.Models
@@ -6,95 +8,224 @@ namespace Data.Models
     {
         public static void Initialize(SchoolContext context)
         {
+            var alexanderUser = new User
+            {
+                UserName = "alex.carson",
+                Password = "827ccb0eea8a706c4c34a16891f84e7b",
+                Email = "asarwar.dummy@gmail.com"
+            };
+            var alonsoUser = new User
+            {
+                UserName = "alon.Meredith",
+                Password = "827ccb0eea8a706c4c34a16891f84e7b",
+                Email = "asarwar.dummy@gmail.com"
+            };
+            var alexUser = new User
+            {
+                UserName = "alex.carson",
+                Password = "827ccb0eea8a706c4c34a16891f84e7b",
+                Email = "asarwar.dummy@gmail.com"
+            };
+            var anandUser = new User
+            {
+                UserName = "anand.Arturo",
+                Password = "827ccb0eea8a706c4c34a16891f84e7b",
+                Email = "asarwar.dummy@gmail.com"
+            };
+            var barzdukasUser = new User
+            {
+                UserName = "barz.Gytis",
+                Password = "827ccb0eea8a706c4c34a16891f84e7b",
+                Email = "asarwar.dummy@gmail.com"
+            };
+
+
+            var haruiInstructor = new User
+            {
+                UserName = "harue.roger",
+                Password = "01cfcd4f6b8770febfb40cb906715822",
+                Email = "asarwar.dummy@gmail.com"
+            };
+
+            var kapooInstructor = new User
+            {
+                UserName = "kaprr.Candace",
+                Password = "01cfcd4f6b8770febfb40cb906715822",
+                Email = "asarwar.dummy@gmail.com"
+            };
+            var adminUser = new User
+            {
+                UserName = "azeem.sarwar",
+                Password = "af584220f030982769d4dd672606555c",
+                Email = "asarwar.dummy@gmail.com"
+            };
+
+
+            var adminRole = new Roles
+            {
+                Name = "Admin"
+            };
+            var userRole = new Roles
+            {
+                Name = "User"
+            };
+            var instructorRole = new Roles
+            {
+                Name = "Instructor"
+            };
+
+            var userRoles = new UserRoles[]
+            {
+                 new UserRoles
+                 {
+                     User = alexanderUser,
+                     Roles = userRole
+                 },
+                  new UserRoles
+                 {
+                     User = alonsoUser,
+                     Roles = userRole
+                 },
+                   new UserRoles
+                 {
+                     User = alexUser,
+                     Roles = userRole
+                 },
+                    new UserRoles
+                 {
+                     User = anandUser,
+                     Roles = userRole
+                 },
+                     new UserRoles
+                 {
+                     User = barzdukasUser,
+                     Roles = userRole
+                  }
+                   ,
+                     new UserRoles
+                 {
+                     User = haruiInstructor,
+                     Roles = instructorRole
+                  },
+                      new UserRoles
+                 {
+                     User = kapooInstructor,
+                     Roles = instructorRole
+                  }
+                      ,
+                      new UserRoles
+                 {
+                     User = adminUser,
+                     Roles = adminRole
+                  }
+            };
+
+
+            context.AddRange(userRoles);
+
+            /**********************************/
             var alexander = new Student
             {
                 FirstMidName = "Carson",
                 LastName = "Alexander",
-                EnrollmentDate = DateTime.Parse("2016-09-01")
+                EnrollmentDate = DateTime.Parse("2016-09-01"),
+                User = alexanderUser                
             };
 
             var alonso = new Student
             {
                 FirstMidName = "Meredith",
                 LastName = "Alonso",
-                EnrollmentDate = DateTime.Parse("2018-09-01")
+                EnrollmentDate = DateTime.Parse("2018-09-01"),
+                User = alonsoUser
             };
 
             var anand = new Student
             {
                 FirstMidName = "Arturo",
                 LastName = "Anand",
-                EnrollmentDate = DateTime.Parse("2019-09-01")
+                EnrollmentDate = DateTime.Parse("2019-09-01"),
+                User = anandUser
             };
 
             var barzdukas = new Student
             {
                 FirstMidName = "Gytis",
                 LastName = "Barzdukas",
-                EnrollmentDate = DateTime.Parse("2018-09-01")
+                EnrollmentDate = DateTime.Parse("2018-09-01"),
+                User = barzdukasUser
             };
 
             var li = new Student
             {
                 FirstMidName = "Yan",
                 LastName = "Li",
-                EnrollmentDate = DateTime.Parse("2018-09-01")
+                EnrollmentDate = DateTime.Parse("2018-09-01"),
+                User = null
             };
 
             var justice = new Student
             {
                 FirstMidName = "Peggy",
                 LastName = "Justice",
-                EnrollmentDate = DateTime.Parse("2017-09-01")
+                EnrollmentDate = DateTime.Parse("2017-09-01"),
+                User = null
             };
 
             var norman = new Student
             {
                 FirstMidName = "Laura",
                 LastName = "Norman",
-                EnrollmentDate = DateTime.Parse("2019-09-01")
+                EnrollmentDate = DateTime.Parse("2019-09-01"),
+                User = null
             };
 
             var olivetto = new Student
             {
                 FirstMidName = "Nino",
                 LastName = "Olivetto",
-                EnrollmentDate = DateTime.Parse("2011-09-01")
+                EnrollmentDate = DateTime.Parse("2011-09-01"),
+                User= null
             };
 
             var abercrombie = new Instructor
             {
                 FirstMidName = "Kim",
                 LastName = "Abercrombie",
-                HireDate = DateTime.Parse("1995-03-11")
+                HireDate = DateTime.Parse("1995-03-11"),
+                User = null
             };
 
             var fakhouri = new Instructor
             {
                 FirstMidName = "Fadi",
                 LastName = "Fakhouri",
-                HireDate = DateTime.Parse("2002-07-06")
+                HireDate = DateTime.Parse("2002-07-06"),
+                User = null
             };
 
             var harui = new Instructor
             {
                 FirstMidName = "Roger",
                 LastName = "Harui",
-                HireDate = DateTime.Parse("1998-07-01")
+                HireDate = DateTime.Parse("1998-07-01"),
+                User = haruiInstructor
             };
 
             var kapoor = new Instructor
             {
                 FirstMidName = "Candace",
                 LastName = "Kapoor",
-                HireDate = DateTime.Parse("2001-01-15")
+                HireDate = DateTime.Parse("2001-01-15"),
+                User= kapooInstructor
             };
 
             var zheng = new Instructor
             {
                 FirstMidName = "Roger",
                 LastName = "Zheng",
-                HireDate = DateTime.Parse("2004-02-12")
+                HireDate = DateTime.Parse("2004-02-12"),
+                User = null
             };
 
             var officeAssignments = new OfficeAssignment[]
@@ -152,7 +283,7 @@ namespace Data.Models
                 Department = engineering,
                 Instructors = new List<Instructor> { kapoor, harui }
             };
-     
+
             var microeconomics = new Course
             {
                 CourseID = 4022,
@@ -161,7 +292,7 @@ namespace Data.Models
                 Department = economics,
                 Instructors = new List<Instructor> { zheng }
             };
-     
+
             var macroeconmics = new Course
             {
                 CourseID = 4041,
@@ -170,7 +301,7 @@ namespace Data.Models
                 Department = economics,
                 Instructors = new List<Instructor> { zheng }
             };
-     
+
             var calculus = new Course
             {
                 CourseID = 1045,
@@ -179,7 +310,7 @@ namespace Data.Models
                 Department = mathematics,
                 Instructors = new List<Instructor> { fakhouri }
             };
-     
+
             var trigonometry = new Course
             {
                 CourseID = 3141,
@@ -188,7 +319,7 @@ namespace Data.Models
                 Department = mathematics,
                 Instructors = new List<Instructor> { harui }
             };
-     
+
             var composition = new Course
             {
                 CourseID = 2021,
@@ -197,7 +328,7 @@ namespace Data.Models
                 Department = english,
                 Instructors = new List<Instructor> { abercrombie }
             };
-     
+
             var literature = new Course
             {
                 CourseID = 2042,

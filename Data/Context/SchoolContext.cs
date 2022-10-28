@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
+using ContosoUniversity.Data.Models.Account;
 
 namespace Data.Context
 {
@@ -19,6 +20,10 @@ namespace Data.Context
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
 
+        public DbSet<User>  Users { get; set; }
+        public DbSet<Roles> Roles { get; set; }
+        public DbSet<UserRoles> UserRoles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Course>().ToTable("Course")
@@ -27,6 +32,7 @@ namespace Data.Context
 
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
+
         }
 
         //public class SchoolContextFactory : IDesignTimeDbContextFactory<SchoolContext>

@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f65a05ef-1455-4bd1-ab26-ea37ab77b447</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\ContosoUniversity.Data.csproj" />
+    <ProjectReference Include="..\EmailService\EmailService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Authorization\" />
   </ItemGroup>
 
 </Project>

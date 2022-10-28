@@ -1,3 +1,4 @@
+using ContosoUniversity.Data.Models.Account;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,7 @@ namespace Data.Models
             get { return LastName + ", " + FirstMidName; }
         }
 
+        public User User { get; set; }
         public ICollection<Course> Courses { get; set; }
         public OfficeAssignment OfficeAssignment { get; set; }
     }

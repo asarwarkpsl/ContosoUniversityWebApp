@@ -2,6 +2,7 @@ using ContosoUniversity.Data.Repository;
 using Data.Context;
 using Data.Models;
 using Data.Repository;
+using EmailService;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,29 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.LogoutPath = "/Account/Logout";
 });
 
+builder.Services.AddAuthorization( options =>
+{
+    options.AddPolicy("AdminsOnly",
+            policy => policy.RequireRole("Role","Admin"));            
+});
+
 builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<EmailSender, EmailSender>();
+
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+var emailConfig = builder.Configuration
+                            .GetSection("EmailConfiguration")
+                            .Get<EmailConfiguration>();
+
+builder.Services.AddSingleton(emailConfig);
 
 var app = builder.Build();
 
