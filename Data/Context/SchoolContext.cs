@@ -35,15 +35,15 @@ namespace Data.Context
 
         }
 
-        //public class SchoolContextFactory : IDesignTimeDbContextFactory<SchoolContext>
-        //{
-        //    public SchoolContext CreateDbContext(string[] args)
-        //    {
-        //        var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
-        //        optionsBuilder.UseSqlServer();
+        public class SchoolContextFactory : IDesignTimeDbContextFactory<SchoolContext>
+        {
+            public SchoolContext CreateDbContext(string[] args)
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
+                optionsBuilder.UseSqlServer();
 
-        //        return new SchoolContext(optionsBuilder.Options);
-        //    }
-        //}
+                return new SchoolContext(optionsBuilder.Options);
+            }
+        }
     }
 }

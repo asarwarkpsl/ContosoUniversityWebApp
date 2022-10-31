@@ -9,9 +9,11 @@ using Data.Context;
 using Data.Models;
 using ContosoUniversity.Data.Repository;
 using NuGet.Protocol.Core.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Instructors
 {
+    [Authorize(Policy = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly IInstructorRepository _repository;

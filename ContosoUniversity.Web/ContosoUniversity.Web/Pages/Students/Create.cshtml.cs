@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Data.Context;
 using Data.Models;
 using Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
+    [Authorize(Policy = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly IStudentRepository _studentRepo;

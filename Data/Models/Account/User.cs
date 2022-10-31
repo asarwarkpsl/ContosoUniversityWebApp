@@ -25,11 +25,11 @@ namespace ContosoUniversity.Data.Models.Account
         [MinLength(5, ErrorMessage = "Password must me minimum 5 characters long")]
         public string Password { get; set; }
 
-        [Required]
+       // [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        public bool EmailVerified { get; set; } = false;
+        public bool EmailVerified { get; set; } = true;
 
         [Display(Name = "Remember me")]
         public bool Rememberme { get; set; } = false;

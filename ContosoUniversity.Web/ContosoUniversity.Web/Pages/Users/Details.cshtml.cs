@@ -5,42 +5,40 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ContosoUniversity.Data.Models.Account;
 using Data.Context;
-using Data.Models;
-using ContosoUniversity.Data.Repository;
-using NuGet.Protocol.Core.Types;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ContosoUniversity.Web.Pages.Instructors
+namespace ContosoUniversity.Web.Pages.Users
 {
-    [Authorize(Policy = "Instructor")]
+    [Authorize(Policy = "Admin")]
+
     public class DetailsModel : PageModel
     {
-        private readonly IInstructorRepository _repository;
+        private readonly SchoolContext _context;
 
-        public DetailsModel(IInstructorRepository repository)
+        public DetailsModel(SchoolContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
-        public Instructor? Instructor { get; set; }
+      public User User { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null )
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var instructor = await _repository.GetInstructorAsync(id);
-
-            if (instructor == null)
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            if (user == null)
             {
                 return NotFound();
             }
             else 
             {
-                Instructor = instructor;
+                User = user;
             }
             return Page();
         }

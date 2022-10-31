@@ -49,13 +49,17 @@ namespace ContosoUniversity.Web.Pages.Account
                 {
                     if (_accountRepo.isEmailVerified(loggedinUser))
                     {
+
                         var claims = new List<Claim>{
                                         new Claim(ClaimTypes.Name, Credentials.UserName),
-                                        new Claim(ClaimTypes.Email,"admin@unknown.com"),
-                                        new Claim(ClaimTypes.NameIdentifier,"1"),
-                                        new Claim(ClaimTypes.Role,loggedinUser.UserRoles.Where(u => u.User == loggedinUser).First().Roles.Name)
+                                        new Claim(ClaimTypes.Email,loggedinUser.Email)
                                     };
 
+                        //Add all roles
+                        foreach (var role in loggedinUser.UserRoles)
+                        { 
+                            claims.Add(new Claim(ClaimTypes.Role, role.Roles.Name));
+                        }
 
                         ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         ClaimsPrincipal principal = new ClaimsPrincipal(identity);
@@ -71,7 +75,8 @@ namespace ContosoUniversity.Web.Pages.Account
                         string message = $@"<h2 style='color:red;'>Verify your Email address</h2>
                                                    <form method='post' action={uri}
                                                     <div>
-                                                        Welcome! {loggedinUser.UserName} , Click on the below link to verify your Account
+                                                        <input type='hidden' value={loggedinUser.ID} name='PostBackHidden' />
+                                                        Welcome! {loggedinUser.UserName} , Click on the below link to verify your Account<br/>
                                                         <button type='submit'>Verify your email</button>
                                                     </div></form> ";
 

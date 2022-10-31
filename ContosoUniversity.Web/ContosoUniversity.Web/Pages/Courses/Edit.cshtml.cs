@@ -10,9 +10,12 @@ using Data.Context;
 using Data.Models;
 using Data.Repository;
 using NuGet.Protocol.Core.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Courses
 {
+
+    [Authorize(Policy ="Admin")]
     public class EditModel : DepartmentNamePageModel
     {
         private readonly ICourseRepository _repository;

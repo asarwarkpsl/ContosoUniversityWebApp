@@ -67,7 +67,7 @@ namespace Data.Models
             };
             var userRole = new Roles
             {
-                Name = "User"
+                Name = "Student"
             };
             var instructorRole = new Roles
             {

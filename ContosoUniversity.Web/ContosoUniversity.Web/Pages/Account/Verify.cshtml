@@ -1,0 +1,14 @@
+﻿@page
+@model ContosoUniversity.Web.Pages.Account.VerifyModel
+@{
+}
+
+@if(Model.IsEmailVerified)
+{
+    <h2> Congratulations! Your email is verified</h2>
+}
+else
+{
+    <h2> Your email is Not verified. Please try later</h2>
+
+}

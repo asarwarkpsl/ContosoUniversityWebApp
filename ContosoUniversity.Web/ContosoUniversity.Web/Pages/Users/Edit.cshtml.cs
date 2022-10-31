@@ -6,41 +6,38 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ContosoUniversity.Data.Models.Account;
 using Data.Context;
-using Data.Models;
-using ContosoUniversity.Data.Repository;
-using NuGet.Protocol.Core.Types;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ContosoUniversity.Web.Pages.Departments
+namespace ContosoUniversity.Web.Pages.Users
 {
     [Authorize(Policy = "Admin")]
     public class EditModel : PageModel
     {
-        private readonly IDepartmentRepository _repository;
+        private readonly SchoolContext _context;
 
-        public EditModel(IDepartmentRepository repository)
+        public EditModel(SchoolContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
         [BindProperty]
-        public Department Department { get; set; } = default!;
+        public User User { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var department =  await _repository.GetDepartmentAsync(id);
-            if (department == null)
+            var user =  await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            if (user == null)
             {
                 return NotFound();
             }
-            Department = department;
-           ViewData["InstructorID"] = new SelectList(await _repository.GetInstructorsAsync(), "ID", "FirstMidName");
+            User = user;
             return Page();
         }
 
@@ -53,16 +50,15 @@ namespace ContosoUniversity.Web.Pages.Departments
                 return Page();
             }
 
-            //_context.Attach(Department).State = EntityState.Modified;
-            _repository.Update(Department);
+            _context.Attach(User).State = EntityState.Modified;
 
             try
             {
-                await _repository.SaveAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_repository.DepartmentExists(Department.ID))
+                if (!UserExists(User.ID))
                 {
                     return NotFound();
                 }
@@ -73,6 +69,11 @@ namespace ContosoUniversity.Web.Pages.Departments
             }
 
             return RedirectToPage("./Index");
-        }        
+        }
+
+        private bool UserExists(int id)
+        {
+          return _context.Users.Any(e => e.ID == id);
+        }
     }
 }

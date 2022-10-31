@@ -9,6 +9,9 @@ namespace ContosoUniversity.Data.Repository
         void DeleteUser(User user);
         bool isEmailVerified(User user);
         bool IsUserExists(string userName);
+        User getUserByID(int UserID);
+        List<User> getUsers();
+
         User Login(string userName, string MD5password);
         void Save();
         void UpdateUser(User user);

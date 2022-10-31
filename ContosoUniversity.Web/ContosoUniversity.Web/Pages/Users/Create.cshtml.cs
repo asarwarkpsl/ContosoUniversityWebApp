@@ -5,21 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ContosoUniversity.Data.Models.Account;
 using Data.Context;
-using Data.Models;
-using ContosoUniversity.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ContosoUniversity.Web.Pages.Instructors
+namespace ContosoUniversity.Web.Pages.Users
 {
     [Authorize(Policy = "Admin")]
     public class CreateModel : PageModel
     {
-        private readonly IInstructorRepository _repository;
+        private readonly SchoolContext _context;
 
-        public CreateModel(IInstructorRepository repository)
+        public CreateModel(SchoolContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
         public IActionResult OnGet()
@@ -28,19 +27,19 @@ namespace ContosoUniversity.Web.Pages.Instructors
         }
 
         [BindProperty]
-        public Instructor Instructor { get; set; }
-
+        public User User { get; set; }
+        
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+          if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            await _repository.AddAsync(Instructor);
-            await _repository.SaveAsync();
+            _context.Users.Add(User);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

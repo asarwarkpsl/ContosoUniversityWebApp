@@ -1,5 +1,6 @@
 ﻿using ContosoUniversity.Data.Models.Account;
 using Data.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,24 @@ namespace ContosoUniversity.Data.Repository
             return _context.Users.Where(x => x.UserName == userName).Any();
         }
 
+        public List<User> getUsers()
+        {
+            return _context.Users
+                           .Include(s => s.UserRoles)
+                           .ToList();
+        }
+
+        public User getUserByID(int UserID)
+        {
+            return _context.Users.Find(UserID);
+        }
+
         public User Login(string userName, string MD5password)
         {
-            User loggedinUser = _context.Users.Where(_user => _user.UserName == userName && _user.Password == MD5password).FirstOrDefault();
+            User loggedinUser = _context.Users.Where(_user => _user.UserName == userName && _user.Password == MD5password)
+                                            .Include(s => s.UserRoles)      
+                                            .ThenInclude(u => u.Roles)
+                                            .FirstOrDefault();
 
             return loggedinUser;
         }

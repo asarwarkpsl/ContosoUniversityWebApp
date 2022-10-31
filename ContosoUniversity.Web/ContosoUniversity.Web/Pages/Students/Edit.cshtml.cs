@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Data.Context;
 using Data.Models;
 using Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Students
 {
+    [Authorize(Policy = "Admin,Student")]
     public class EditModel : PageModel
     {
         private readonly IStudentRepository _studentRepo;

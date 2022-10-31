@@ -5,62 +5,59 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ContosoUniversity.Data.Models.Account;
 using Data.Context;
-using Data.Models;
-using ContosoUniversity.Data.Repository;
-using NuGet.Protocol.Core.Types;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ContosoUniversity.Web.Pages.Departments
+namespace ContosoUniversity.Web.Pages.Users
 {
     [Authorize(Policy = "Admin")]
 
     public class DeleteModel : PageModel
     {
-        private readonly IDepartmentRepository _repository;
+        private readonly SchoolContext _context;
 
-        public DeleteModel(IDepartmentRepository repository)
+        public DeleteModel(SchoolContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
         [BindProperty]
-      public Department Department { get; set; }
+      public User User { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var department = await _repository.GetDepartmentAsync(id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
 
-            if (department == null)
+            if (user == null)
             {
                 return NotFound();
             }
             else 
             {
-                Department = department;
+                User = user;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
-            var department =  await _repository.GetDepartmentAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (department != null)
+            if (user != null)
             {
-                Department = department;
-                
-                _repository.Delete(Department.ID);
-                await _repository.SaveAsync();
+                User = user;
+                _context.Users.Remove(User);
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");

@@ -10,9 +10,11 @@ using Data.Context;
 using Data.Models;
 using ContosoUniversity.Data.Repository;
 using NuGet.Protocol.Core.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Instructors
 {
+    [Authorize(Policy = "Admin,Instructor")]
     public class EditModel : InstructorCoursesPageModel
     {
         private readonly IInstructorRepository _repository;
