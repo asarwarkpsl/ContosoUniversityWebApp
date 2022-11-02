@@ -28,22 +28,32 @@
                 <label asp-for="User.Email" class="control-label"></label>
                 <input asp-for="User.Email" class="form-control" />
                 <span asp-validation-for="User.Email" class="text-danger"></span>
+            </div>                  
+
+            @*Display List of roles here*@ 
+
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        @{
+                            foreach(var roleName in Model.UserRoles)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                                name="SelectedRoles"
+                                                value="@roleName.ID" />
+                                    </td>
+                                    <td>
+                                        @roleName.Name<br/>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="User.EmailVerified" /> @Html.DisplayNameFor(model => model.User.EmailVerified)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="User.Rememberme" /> @Html.DisplayNameFor(model => model.User.Rememberme)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="User.Deleted" /> @Html.DisplayNameFor(model => model.User.Deleted)
-                </label>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

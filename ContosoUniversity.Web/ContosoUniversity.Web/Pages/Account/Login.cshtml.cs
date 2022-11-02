@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using ContosoUniversity.Data.Models.Account;
 using MimeKit;
 using ContosoUniversity.Data.Repository;
+using ContosoUniversity.Web.Utilities;
 using EmailService;
 using System.Drawing;
 
@@ -42,7 +43,7 @@ namespace ContosoUniversity.Web.Pages.Account
             if (Credentials != null)
             {
                 //verify credentials
-                string MD5Password = GenerateMD5(Credentials.Password);
+                string MD5Password = Utility.GenerateMD5(Credentials.Password);
                 User loggedinUser = _accountRepo.Login(Credentials.UserName, MD5Password);
 
                 if (loggedinUser != null) //user is verified
@@ -99,14 +100,6 @@ namespace ContosoUniversity.Web.Pages.Account
 
             return Page();
         }
-        public string GenerateMD5(string input)
-        {
-            // Use input string to calculate MD5 hash
-            using System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-            return Convert.ToHexString(hashBytes);
-        }
+        
     }
 }

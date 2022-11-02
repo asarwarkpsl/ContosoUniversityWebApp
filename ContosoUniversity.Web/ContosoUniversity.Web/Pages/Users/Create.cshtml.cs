@@ -8,38 +8,66 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 using Microsoft.AspNetCore.Authorization;
+using ContosoUniversity.Data.Repository;
+using Data.Models;
+using System.Net;
+using ContosoUniversity.Web.Utilities;
 
 namespace ContosoUniversity.Web.Pages.Users
 {
-    [Authorize(Policy = "Admin")]
     public class CreateModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IAccountRepository _accountRepo;
 
-        public CreateModel(SchoolContext context)
+        public CreateModel(IAccountRepository accountRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
         }
 
         public IActionResult OnGet()
         {
+            UserRoles = _accountRepo.getAllRoles();
+
             return Page();
         }
 
         [BindProperty]
         public User User { get; set; }
-        
+
+        [BindProperty]
+        public List<Roles> UserRoles { get; set; }
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int[] SelectedRoles)
         {
           if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
+            User.Password = Utility.GenerateMD5(User.Password); 
+            User.UserRoles = new List<UserRoles>();
+            
+
+            var allRoles = _accountRepo.getAllRoles();
+            //Unique roles
+            var selectedRolesHS = new HashSet<int>(SelectedRoles);
+
+
+            foreach (var role in selectedRolesHS)
+            {
+                UserRoles newRole = new()
+                {
+                    Roles = allRoles.Find(r => r.ID == role)
+                };
+
+                User.UserRoles.Add(newRole);
+            }
+
+
+            _accountRepo.AddUser(User);
+            _accountRepo.Save();
 
             return RedirectToPage("./Index");
         }

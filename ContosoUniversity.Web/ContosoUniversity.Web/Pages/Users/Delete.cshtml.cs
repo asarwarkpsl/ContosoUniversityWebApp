@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 using Microsoft.AspNetCore.Authorization;
+using ContosoUniversity.Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Users
 {
@@ -15,11 +16,11 @@ namespace ContosoUniversity.Web.Pages.Users
 
     public class DeleteModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IAccountRepository _accountRepo;
 
-        public DeleteModel(SchoolContext context)
+        public DeleteModel(IAccountRepository accountRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
         }
 
         [BindProperty]
@@ -27,12 +28,12 @@ namespace ContosoUniversity.Web.Pages.Users
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            var user = _accountRepo.getUserByID(id);
 
             if (user == null)
             {
@@ -47,17 +48,20 @@ namespace ContosoUniversity.Web.Pages.Users
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null)
             {
                 return NotFound();
             }
-            var user = await _context.Users.FindAsync(id);
+            var user = _accountRepo.getUserByID(id);
 
             if (user != null)
             {
                 User = user;
-                _context.Users.Remove(User);
-                await _context.SaveChangesAsync();
+
+                User.Deleted = true;
+
+                _accountRepo.UpdateUser(User);
+                _accountRepo.Save();
             }
 
             return RedirectToPage("./Index");

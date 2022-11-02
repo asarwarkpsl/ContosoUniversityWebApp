@@ -9,56 +9,90 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 using Microsoft.AspNetCore.Authorization;
+using ContosoUniversity.Data.Models;
+using ContosoUniversity.Data.Repository;
+using NuGet.Packaging;
 
 namespace ContosoUniversity.Web.Pages.Users
 {
     [Authorize(Policy = "Admin")]
-    public class EditModel : PageModel
+    public class EditModel : UserRolesPageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IAccountRepository _accountRepo;
 
-        public EditModel(SchoolContext context)
+        public EditModel(IAccountRepository accountRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
         }
 
         [BindProperty]
         public User User { get; set; } = default!;
 
+        public List<AssignedUserRoles> UserRoles { get; set; }
+
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var user =  await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            var user = _accountRepo.getUserByID(id);
+
             if (user == null)
             {
                 return NotFound();
             }
             User = user;
+
+            //Populate assigned roles
+            UserRoles = PopulateAssignedUserRoles(_accountRepo, User);
+
+
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id,int[] assignedRoles)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(User).State = EntityState.Modified;
+            var user = _accountRepo.getUserByID(id);
+
+            user.UserRoles = null;
+            user.UserRoles = new List<UserRoles>();
+            User = user;
+
+
+            var allRoles = _accountRepo.getAllRoles();
+            //Unique roles
+            var selectedRolesHS = new HashSet<int>(assignedRoles);
+
+
+            foreach (var role in selectedRolesHS)
+            {
+                UserRoles newRole = new()
+                {
+                    Roles = allRoles.Find(r => r.ID == role)
+                };
+
+                User.UserRoles.Add(newRole);
+            }
+
+            _accountRepo.UpdateUser(User);
 
             try
             {
-                await _context.SaveChangesAsync();
+                _accountRepo.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(User.ID))
+                if (! _accountRepo.IsUserExists(User.UserName))
                 {
                     return NotFound();
                 }
@@ -69,11 +103,6 @@ namespace ContosoUniversity.Web.Pages.Users
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool UserExists(int id)
-        {
-          return _context.Users.Any(e => e.ID == id);
         }
     }
 }

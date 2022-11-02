@@ -8,27 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 using Microsoft.AspNetCore.Authorization;
+using ContosoUniversity.Data.Repository;
 
 namespace ContosoUniversity.Web.Pages.Users
 {
 
-    [Authorize(Policy = "Admin")]
     public class IndexModel : PageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IAccountRepository _accountRepo;
 
-        public IndexModel(SchoolContext context)
+        public IndexModel(IAccountRepository accountRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
         }
 
         public IList<User> User { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Users != null)
+           //if (_context.Users != null)
             {
-                User = await _context.Users.ToListAsync();
+                User = _accountRepo.getUsers();
             }
         }
     }

@@ -36,13 +36,26 @@ namespace ContosoUniversity.Data.Repository
         public List<User> getUsers()
         {
             return _context.Users
+                           .Where(a => a.Deleted == false)
                            .Include(s => s.UserRoles)
                            .ToList();
         }
 
-        public User getUserByID(int UserID)
+        public List<Roles> getAllRoles()
         {
-            return _context.Users.Find(UserID);
+            return _context.Roles
+                            .ToList();
+        }
+        public User getUserByID(int? UserID)
+        {
+            var user = _context.Users
+                               .Include(r => r.UserRoles)
+                               .Where(a => a.ID == UserID && a.Deleted == false);
+
+            if (user != null)
+                return user.FirstOrDefault();
+            else
+                return null;
         }
 
         public User Login(string userName, string MD5password)

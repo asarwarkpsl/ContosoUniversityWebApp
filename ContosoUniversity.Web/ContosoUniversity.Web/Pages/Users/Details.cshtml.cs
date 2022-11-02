@@ -8,30 +8,34 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data.Models.Account;
 using Data.Context;
 using Microsoft.AspNetCore.Authorization;
+using ContosoUniversity.Data.Repository;
+using ContosoUniversity.Data.Models;
 
 namespace ContosoUniversity.Web.Pages.Users
 {
     [Authorize(Policy = "Admin")]
 
-    public class DetailsModel : PageModel
+    public class DetailsModel : UserRolesPageModel
     {
-        private readonly SchoolContext _context;
+        private readonly IAccountRepository _accountRepo;
+        public List<AssignedUserRoles> AssignedUserRoles { get; set; }
 
-        public DetailsModel(SchoolContext context)
+        public DetailsModel(IAccountRepository accountRepo)
         {
-            _context = context;
+            _accountRepo = accountRepo;
         }
 
       public User User { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Users == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.ID == id);
+            var user = _accountRepo.getUserByID(id);
+
             if (user == null)
             {
                 return NotFound();
@@ -39,6 +43,7 @@ namespace ContosoUniversity.Web.Pages.Users
             else 
             {
                 User = user;
+                AssignedUserRoles = PopulateAssignedUserRoles(_accountRepo, User);
             }
             return Page();
         }

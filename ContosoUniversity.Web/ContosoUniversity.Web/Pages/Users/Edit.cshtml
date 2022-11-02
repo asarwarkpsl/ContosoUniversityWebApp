@@ -48,6 +48,32 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+            @*Display List of roles here*@
+
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        @{
+                            foreach (var roleName in Model.UserRoles)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                           name="assignedRoles"
+                                           value="@roleName.RoleID"
+                                           @(Html.Raw(roleName.isAssigned ? "checked=\"checked\"" : "")) />
+                                    </td>
+                                    <td>
+                                        @roleName.Name<br />
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+
         </form>
     </div>
 </div>

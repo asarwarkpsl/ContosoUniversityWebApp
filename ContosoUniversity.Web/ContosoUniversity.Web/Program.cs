@@ -21,8 +21,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization( options =>
 {
-    options.AddPolicy("AdminsOnly",
-            policy => policy.RequireRole("Role","Admin"));            
+    options.AddPolicy("Admin",
+            policy => policy.RequireRole("Role","Admin"));
+    options.AddPolicy("Instructor",
+            policy => policy.RequireRole("Role", "Instructor"));
 });
 
 builder.Services.AddScoped<IStudentRepository,StudentRepository>();

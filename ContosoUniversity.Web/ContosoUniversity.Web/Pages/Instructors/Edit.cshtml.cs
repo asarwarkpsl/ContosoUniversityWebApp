@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Web.Pages.Instructors
 {
-    [Authorize(Policy = "Admin,Instructor")]
+    [Authorize(Policy = "Admin")]
     public class EditModel : InstructorCoursesPageModel
     {
         private readonly IInstructorRepository _repository;
