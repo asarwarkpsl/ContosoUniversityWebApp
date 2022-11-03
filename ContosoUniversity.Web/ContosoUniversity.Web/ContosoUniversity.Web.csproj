@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\ContosoUniversity.Data.csproj" />
+    <ProjectReference Include="..\..\ContosoUniversity.Data\ContosoUniversity.Data.csproj" />
     <ProjectReference Include="..\EmailService\EmailService.csproj" />
   </ItemGroup>
 
