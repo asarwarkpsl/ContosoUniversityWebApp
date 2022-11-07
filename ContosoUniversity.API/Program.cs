@@ -19,6 +19,11 @@ builder.Services.AddDbContext<SchoolContext>(options =>
 
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
+builder.Services.AddMvc(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = false;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,6 +36,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 
