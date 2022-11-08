@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ContosoUniversity.Data.Repository
 {
-    internal interface IEnrollmentRepository : IDisposable
+    public interface IEnrollmentRepository : IDisposable
     {
         public Task<IEnumerable<Enrollment>> GetEnrollmentsAsync();
         public Task<(IEnumerable<Enrollment>, int totalCount)> GetEnrollmentsAsync(int courceID, string? searchQuery, int pageNum, int pageSize);
