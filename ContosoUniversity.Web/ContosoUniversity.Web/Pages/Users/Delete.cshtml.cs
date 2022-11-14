@@ -61,7 +61,7 @@ namespace ContosoUniversity.Web.Pages.Users
                 User.Deleted = true;
 
                 _accountRepo.UpdateUser(User);
-                _accountRepo.Save();
+                await _accountRepo.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");

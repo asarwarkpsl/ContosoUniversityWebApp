@@ -33,12 +33,12 @@ namespace ContosoUniversity.Data.Repository
             return _context.Users.Where(x => x.UserName == userName).Any();
         }
 
-        public List<User> getUsers()
+        public async Task<IEnumerable<User>> getUsersAsync()
         {
-            return _context.Users
+            return await _context.Users
                            .Where(a => a.Deleted == false)
                            .Include(s => s.UserRoles)
-                           .ToList();
+                           .ToListAsync();
         }
 
         public List<Roles> getAllRoles()
@@ -106,9 +106,9 @@ namespace ContosoUniversity.Data.Repository
             _context.Users.Update(user);
         }
 
-        public void Save()
+        public async Task SaveChangesAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -67,7 +67,7 @@ namespace ContosoUniversity.Web.Pages.Users
 
 
             _accountRepo.AddUser(User);
-            _accountRepo.Save();
+            await _accountRepo.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

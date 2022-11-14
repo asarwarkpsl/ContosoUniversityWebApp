@@ -88,7 +88,7 @@ namespace ContosoUniversity.Web.Pages.Users
 
             try
             {
-                _accountRepo.Save();
+                await _accountRepo.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {

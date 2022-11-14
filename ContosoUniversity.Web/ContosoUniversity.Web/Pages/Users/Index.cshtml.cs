@@ -28,7 +28,7 @@ namespace ContosoUniversity.Web.Pages.Users
         {
            //if (_context.Users != null)
             {
-                User = _accountRepo.getUsers();
+                User = (IList<User>)await _accountRepo.getUsersAsync();
             }
         }
     }

@@ -10,11 +10,11 @@ namespace ContosoUniversity.Data.Repository
         bool isEmailVerified(User user);
         bool IsUserExists(string userName);
         User getUserByID(int? UserID);
-        List<User> getUsers();
+        public Task<IEnumerable<User>> getUsersAsync();
         List<Roles> getAllRoles();
 
         User Login(string userName, string MD5password);
-        void Save();
+        public Task SaveChangesAsync();
         void UpdateUser(User user);
         bool ValidatePassword(string userName, string MD5password);
     }
